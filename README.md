@@ -1,8 +1,8 @@
-# ==============================================================================
+# =====================================
 # DOCUMENTAÇÃO DO REPOSITÓRIO: README
 # Projeto: Evolução do Sistema de Armazenamento em Nuvem
 # Framework: NestJS (Node.js)
-# ==============================================================================
+# =====================================
 
 # 🚀 Evolução do Sistema de Armazenamento em Nuvem
 
