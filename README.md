@@ -26,7 +26,7 @@ Antes de iniciar, certifique-se de que tem instalado na sua máquina:
 Siga o passo a passo abaixo para clonar o repositório e colocar a aplicação a rodar localmente:
 
 ### 1. Clonar o Repositório
-$ git clone https://github.com/seu-usuario/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem.git
+$ git clone https://github.com/Guiboom/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem
 
 ### 2. Acessar a Pasta do Projeto
 $ cd Evolucao-do-Sistema-de-Armazenamento-em-Nuvem/upload
@@ -64,9 +64,11 @@ A API expõe os seguintes endpoints estruturados sob o recurso /arquivo.
     "filename": "1715639201452-foto_perfil.png",
     "mimeType": "image/png",
     "sizeInBytes": 1048576,
-    "path": "./uploads/1715639201452-foto_perfil.png"
+    "path": "./drive/1715639201452-foto_perfil.png"
   }
 }
+
+> Nota: os arquivos são armazenados localmente na pasta `upload/drive`.
 
 🔴 Resposta de Erro (400 Bad Request - Arquivo Ausente ou Inválido):
 {
@@ -83,28 +85,29 @@ A API expõe os seguintes endpoints estruturados sob o recurso /arquivo.
 * Parâmetros: Nenhum.
 
 🟢 Resposta de Sucesso (200 OK):
-[
-  {
-    "id": "1",
-    "originalName": "relatorio.pdf",
-    "filename": "1715639100221-relatorio.pdf",
-    "sizeInBytes": 542100
-  },
-  {
-    "id": "2",
-    "originalName": "foto_perfil.png",
-    "filename": "1715639201452-foto_perfil.png",
-    "sizeInBytes": 1048576
-  }
-]
+{
+  "total": 2,
+  "files": [
+    {
+      "filename": "relatorio.pdf",
+      "size": 542100,
+      "criado": "2026-05-20T12:00:00.000Z"
+    },
+    {
+      "filename": "foto_perfil.png",
+      "size": 1048576,
+      "criado": "2026-05-20T12:05:00.000Z"
+    }
+  ]
+}
 
 ---
 
-### 3. Buscar/Download de Arquivo por Nome Técnico
+### 3. Buscar/Download de Arquivo por ID
 * Método HTTP: GET
-* Rota: /arquivo/:filename
+* Rota: /arquivo/:id
 * Parâmetros de URL (Param):
-  - filename: O nome gerado pelo sistema do arquivo armazenado (Exemplo: 1715639201452-foto_perfil.png).
+  - id: O identificador numérico do arquivo armazenado.
 
 🟢 Resposta de Sucesso (200 OK):
 * Retorna o arquivo binário diretamente para download ou visualização no navegador.
@@ -120,9 +123,9 @@ A API expõe os seguintes endpoints estruturados sob o recurso /arquivo.
 
 ### 4. Excluir Arquivo do Servidor
 * Método HTTP: DELETE
-* Rota: /arquivo/:filename
+* Rota: /arquivo/:id
 * Parâmetros de URL (Param):
-  - filename: O nome gerado pelo sistema do arquivo que deseja remover.
+  - id: O identificador numérico do arquivo que deseja remover.
 
 🟢 Resposta de Sucesso (200 OK):
 {
