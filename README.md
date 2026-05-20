@@ -1,148 +1,235 @@
-# =====================================
-# DOCUMENTAÇÃO DO REPOSITÓRIO: README
-# Projeto: Evolução do Sistema de Armazenamento em Nuvem
-# Framework: NestJS (Node.js)
-# =====================================
+﻿# 🚀 Evolução do Sistema de Armazenamento em Nuvem
 
-# 🚀 Evolução do Sistema de Armazenamento em Nuvem
-
-> Um gerenciador de arquivos robusto, performático e escalável construído com NestJS para simular e evoluir um ecossistema de armazenamento em nuvem.
-
-Este projeto consiste numa API REST desenvolvida em Node.js com o framework NestJS. O objetivo principal é fornecer uma estrutura sólida para o upload, download, listagem e exclusão de ficheiros, preparando o terreno para futuras integrações com storages em nuvem (como AWS S3 ou Google Cloud Storage).
+Uma API REST construída com NestJS para upload, listagem e exclusão de arquivos em armazenamento local, com estrutura preparada para futuras integrações com serviços em nuvem.
 
 ---
 
 ## 💻 Pré-requisitos
 
-Antes de iniciar, certifique-se de que tem instalado na sua máquina:
-* Node.js (Versão 18 LTS ou superior recomendada)
-* npm (Geralmente vem integrado ao Node)
-* Uma ferramenta para testar as rotas da API, como Postman, Insomnia ou a extensão Thunder Client no VS Code.
+Antes de iniciar, verifique se você possui:
+
+* Node.js 18 ou superior
+* npm
+* Uma ferramenta para testar API (Postman, Insomnia, Thunder Client, etc.)
 
 ---
 
 ## 🛠️ Instalação e Execução Local
 
-Siga o passo a passo abaixo para clonar o repositório e colocar a aplicação a rodar localmente:
+Execute os comandos abaixo a partir da pasta raiz do repositório:
 
-### 1. Clonar o Repositório
-$ git clone https://github.com/Guiboom/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem
+```bash
+git clone https://github.com/Guiboom/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem
+cd Evolucao-do-Sistema-de-Armazenamento-em-Nuvem/upload
+npm install
+npm run start:dev
+```
 
-### 2. Acessar a Pasta do Projeto
-$ cd Evolucao-do-Sistema-de-Armazenamento-em-Nuvem/upload
-
-### 3. Instalar as Dependências
-$ npm install
-
-### 4. Executar a Aplicação
-Para rodar o servidor em modo de desenvolvimento com suporte a live-reload (reinicialização automática a cada alteração no código):
-$ npm run start:dev
-
-O servidor iniciará com sucesso e estará disponível no endereço: http://localhost:3000
+A aplicação iniciará em `http://localhost:3000`.
 
 ---
 
-## 🛣️ Guia Completo de Endpoints
+## 🧭 Observações importantes
 
-A API expõe os seguintes endpoints estruturados sob o recurso /arquivo. 
+* O código principal está em `upload/src/`.
+* Os arquivos enviados são salvos em `upload/drive/`.
+* O diretório `drive` é criado automaticamente se ainda não existir.
+* O limite de upload é de 5 MB por arquivo.
+* Formatos aceitos: `image/png`, `image/jpeg`, `image/jpg`, `image/tiff`.
 
-⚠️ Nota Importante: Para rotas que utilizam FormData, certifique-se de configurar corretamente o cabeçalho (Header) da sua requisição para "multipart/form-data" na sua ferramenta de testes.
+---
 
-### 1. Realizar Upload de Arquivo
-* Método HTTP: POST
-* Rota: /arquivo/upload
-* Tipo de Conteúdo: multipart/form-data
-* Parâmetros no Corpo (FormData):
-  - file: O arquivo físico que será enviado (chave do tipo File).
+## 🌐 Base URL
 
-🟢 Resposta de Sucesso (201 Created):
+```text
+http://localhost:3000
+```
+
+---
+
+## 📚 Guia Completo de Endpoints
+
+### GET /
+
+Retorna uma mensagem de boas-vindas.
+
+* Método HTTP: `GET`
+* Rota: `/`
+
+#### Exemplo de resposta de sucesso (200 OK)
+
+```json
+"Hello World!"
+```
+
+---
+
+### POST /arquivo/upload
+
+Faz upload de um arquivo para o servidor.
+
+* Método HTTP: `POST`
+* Rota: `/arquivo/upload`
+* Tipo de conteúdo: `multipart/form-data`
+* Campo do formulário:
+  * `file` - arquivo a ser enviado
+
+#### Exemplo de resposta de sucesso (201 Created)
+
+```json
 {
-  "statusCode": 201,
   "message": "Upload realizado com sucesso!",
-  "data": {
-    "originalName": "foto_perfil.png",
-    "filename": "1715639201452-foto_perfil.png",
-    "mimeType": "image/png",
-    "sizeInBytes": 1048576,
-    "path": "./drive/1715639201452-foto_perfil.png"
-  }
+  "arquivo": "file-1688123456789.png"
 }
+```
 
-> Nota: os arquivos são armazenados localmente na pasta `upload/drive`.
+#### Exemplo de resposta de erro (formato inválido, 400 Bad Request)
 
-🔴 Resposta de Erro (400 Bad Request - Arquivo Ausente ou Inválido):
+```json
 {
-  "message": "Nenhum arquivo foi enviado ou o formato não é suportado.",
-  "error": "Bad Request",
-  "statusCode": 400
+  "statusCode": 400,
+  "message": "O formato de arquivo é inadequado, envie apenas arquivos png, jpeg, jpg e tiff",
+  "error": "Bad Request"
 }
+```
+
+#### Exemplo de resposta de erro (arquivo muito grande, 413 Payload Too Large)
+
+```json
+{
+  "message": "O arquivo ultrapassa o limite permitido de 5MB.",
+  "error": "Payload Too Large",
+  "statusCode": 413
+}
+```
+
+#### Exemplo de resposta de erro (arquivo ausente, 400 Bad Request)
+
+```json
+{
+  "statusCode": 400,
+  "message": "Nenhum arquivo enviado.",
+  "error": "Bad Request"
+}
+```
 
 ---
 
-### 2. Listar Todos os Arquivos Salvos
-* Método HTTP: GET
-* Rota: /arquivo
-* Parâmetros: Nenhum.
+### GET /arquivo
 
-🟢 Resposta de Sucesso (200 OK):
+Lista todos os arquivos salvos em `upload/drive/`.
+
+* Método HTTP: `GET`
+* Rota: `/arquivo`
+
+#### Exemplo de resposta de sucesso (200 OK)
+
+```json
 {
   "total": 2,
   "files": [
     {
-      "filename": "relatorio.pdf",
-      "size": 542100,
+      "filename": "file-1688123456789.png",
+      "size": 123456,
       "criado": "2026-05-20T12:00:00.000Z"
     },
     {
-      "filename": "foto_perfil.png",
-      "size": 1048576,
+      "filename": "file-1688123456790.jpg",
+      "size": 234567,
       "criado": "2026-05-20T12:05:00.000Z"
     }
   ]
 }
+```
+
+#### Exemplo de resposta de erro (400 Bad Request)
+
+```json
+{
+  "statusCode": 400,
+  "message": "Não foi possivel listar os arquivos"
+}
+```
 
 ---
 
-### 3. Buscar/Download de Arquivo por ID
-* Método HTTP: GET
-* Rota: /arquivo/:id
-* Parâmetros de URL (Param):
-  - id: O identificador numérico do arquivo armazenado.
+### GET /arquivo/:id
 
-🟢 Resposta de Sucesso (200 OK):
-* Retorna o arquivo binário diretamente para download ou visualização no navegador.
+Retorna um texto placeholder indicando o ID do arquivo.
 
-🔴 Resposta de Erro (404 Not Found - Arquivo Não Existe):
-{
-  "message": "O arquivo 1715639201452-inexistente.png não foi encontrado no servidor.",
-  "error": "Not Found",
-  "statusCode": 404
-}
+* Método HTTP: `GET`
+* Rota: `/arquivo/:id`
+* Parâmetros de URL:
+  * `id` - identificador numérico do arquivo
 
----
+#### Exemplo de resposta de sucesso (200 OK)
 
-### 4. Excluir Arquivo do Servidor
-* Método HTTP: DELETE
-* Rota: /arquivo/:id
-* Parâmetros de URL (Param):
-  - id: O identificador numérico do arquivo que deseja remover.
-
-🟢 Resposta de Sucesso (200 OK):
-{
-  "statusCode": 200,
-  "message": "Arquivo removido com sucesso do armazenamento local."
-}
-
-🔴 Resposta de Erro (404 Not Found - Arquivo Não Encontrado para Exclusão):
-{
-  "message": "Não foi possível excluir. Arquivo não encontrado.",
-  "error": "Not Found",
-  "statusCode": 404
-}
+```text
+This action returns a #1 arquivo
+```
 
 ---
 
-## 🚀 Próximas Implementações (Roadmap)
-[ ] Conexão com banco de dados (PostgreSQL/MongoDB) via Prisma ou TypeORM para persistência de metadados.
-[ ] Integração com o SDK da AWS para enviar os uploads direto para um Bucket S3.
-[ ] Autenticação JWT para restringir o upload apenas a utilizadores logados.
+### PATCH /arquivo/:id
+
+Atualiza informações de arquivo (implementação atual é placeholder).
+
+* Método HTTP: `PATCH`
+* Rota: `/arquivo/:id`
+* Parâmetros de URL:
+  * `id` - identificador numérico do arquivo
+* Corpo JSON:
+  * `UpdateArquivoDto` (sem campos definidos atualmente)
+
+#### Exemplo de resposta de sucesso (200 OK)
+
+```text
+This action updates a #1 arquivo
+```
+
+---
+
+### DELETE /arquivo/:nome
+
+Remove um arquivo existente pelo nome salvo em `upload/drive/`.
+
+* Método HTTP: `DELETE`
+* Rota: `/arquivo/:nome`
+* Parâmetros de URL:
+  * `nome` - nome do arquivo gerado pelo servidor, por exemplo `file-1688123456789.png`
+
+#### Exemplo de resposta de sucesso (200 OK)
+
+```json
+{
+  "message": "Arquivo removido com sucesso!"
+}
+```
+
+#### Exemplo de resposta de erro (404 Not Found)
+
+```json
+{
+  "statusCode": 404,
+  "message": "O arquivo solicitado não foi encontrado no servidor.",
+  "error": "Not Found"
+}
+```
+
+---
+
+## 🧩 Observações sobre a implementação atual
+
+* A rota de upload salva arquivos em `upload/drive` com nome único gerado pelo servidor.
+* O projeto cria automaticamente a pasta `drive` se ela ainda não existir.
+* Os endpoints `GET /arquivo/:id` e `PATCH /arquivo/:id` existem, mas retornam mensagens placeholder no estado atual do código.
+
+---
+
+## 🚀 Roadmap de melhorias
+
+* Persistência de metadados em banco de dados (PostgreSQL, MongoDB, etc.)
+* Integração com armazenamento em nuvem (AWS S3, Google Cloud Storage)
+* Autenticação JWT para restringir upload e acesso
+* Endpoint de download direto por nome de arquivo
+* Evolução do serviço para gerenciar metadados completos de arquivos

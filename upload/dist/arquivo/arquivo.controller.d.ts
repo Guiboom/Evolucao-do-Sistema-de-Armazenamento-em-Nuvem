@@ -1,9 +1,16 @@
+import { ExceptionFilter, ArgumentsHost, PayloadTooLargeException } from '@nestjs/common';
 import { ArquivoService } from './arquivo.service';
 import { UpdateArquivoDto } from './dto/update-arquivo.dto';
+export declare class TamanhoArquivoFilter implements ExceptionFilter {
+    catch(exception: PayloadTooLargeException, host: ArgumentsHost): void;
+}
 export declare class ArquivoController {
     private readonly arquivoService;
     constructor(arquivoService: ArquivoService);
-    uploadFile(file: Express.Multer.File): void;
+    uploadFile(file: Express.Multer.File): {
+        message: string;
+        arquivo: string;
+    };
     findAll(): {
         total: number;
         files: {
@@ -14,5 +21,7 @@ export declare class ArquivoController {
     };
     findOne(id: string): string;
     update(id: string, updateArquivoDto: UpdateArquivoDto): string;
-    remove(id: string): string;
+    remove(nome: string): {
+        message: string;
+    };
 }
