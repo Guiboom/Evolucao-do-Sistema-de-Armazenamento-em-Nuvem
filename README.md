@@ -15,19 +15,32 @@ Antes de iniciar, verifique se você possui:
 ---
 
 ## 🛠️ Instalação e Execução Local
-
 Execute os comandos abaixo a partir da pasta raiz do repositório:
 
-```bash
+
+1. Inicializando o Backend (Servidor)
+Abra o seu terminal e rode os comandos abaixo para baixar o projeto, entrar na pasta do servidor, instalar tudo e ligar a API:
+
 git clone https://github.com/Guiboom/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem
 cd Evolucao-do-Sistema-de-Armazenamento-em-Nuvem/upload
 npm install
 npm run start:dev
-```
 
-A aplicação iniciará em `http://localhost:3000`.
+A aplicação iniciará em http://localhost:3000.
 
----
+⚠️ Importante: Deixe esse terminal aberto rodando o servidor! Não feche ele.
+
+2. Inicializando o Frontend (Interface Angular)
+Agora, abra uma nova janela ou aba de terminal (para não desligar o servidor do passo anterior), vá até a pasta do frontend e execute os comandos abaixo para instalar o Tailwind CSS e rodar a interface:
+
+cd Evolucao-do-Sistema-de-Armazenamento-em-Nuvem/frontend
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+npm install
+npm run start
+
+O frontend iniciará em http://localhost:4200. Abra o seu navegador e acesse esse endereço para ver o sistema rodando!
+
 
 ## 🧭 Observações importantes
 

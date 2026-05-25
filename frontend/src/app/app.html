@@ -1,0 +1,192 @@
+<div class="min-h-screen bg-slate-50/50 text-slate-800 antialiased selection:bg-blue-500/10 selection:text-blue-600">
+  
+  @if (mensagemFeedback()) {
+    <div class="fixed top-6 right-6 z-[100] animate-bounce-short">
+      <div 
+        [class.bg-emerald-600]="tipoFeedback() === 'sucesso'"
+        [class.bg-rose-600]="tipoFeedback() === 'erro'"
+        class="text-white px-5 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-sm font-medium transition-all duration-300"
+      >
+        @if (tipoFeedback() === 'sucesso') {
+          <svg class="w-5 h-5 flex-shrink-0 text-emerald-100" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        } @else {
+          <svg class="w-5 h-5 flex-shrink-0 text-rose-100" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        }
+        <span>{{ mensagemFeedback() }}</span>
+      </div>
+    </div>
+  }
+
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 transition-all">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.5 4.5 0 002.25 15z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-sm font-bold tracking-tight text-slate-900">NexDrive</span>
+          <span class="text-[10px] font-semibold text-blue-600 block -mt-1 tracking-wider uppercase">Cloud Core</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <div class="hidden sm:flex items-center space-x-1 text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200/40">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>
+          API Node/NestJS Online
+        </div>
+        <div class="h-8 w-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-600 shadow-inner">
+          GM
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Armazenamento em Nuvem</h1>
+        <p class="text-sm text-slate-500 mt-1">Gerencie, filtre e faça upload de ativos digitais na infraestrutura SENAI v2026.</p>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <div class="bg-white border border-slate-200/80 px-4 py-2 rounded-xl shadow-sm text-center min-w-[100px]">
+          <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Arquivos</span>
+          <span class="text-lg font-bold text-slate-800">{{ isLoading() ? '...' : fotos().length }}</span>
+        </div>
+        <div class="bg-white border border-slate-200/80 px-4 py-2 rounded-xl shadow-sm text-center min-w-[100px]">
+          <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</span>
+          <span class="text-sm font-bold text-emerald-600 flex items-center justify-center mt-1">
+            Pronto
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div 
+      (dragover)="onDragOver($event)" 
+      (dragleave)="onDragLeave($event)" 
+      (drop)="onDrop($event)"
+      [class.border-blue-500]="isDragging()" 
+      [class.bg-blue-50/40]="isDragging()"
+      [class.ring-4]="isDragging()"
+      [class.ring-blue-500/10]="isDragging()"
+      [class.border-slate-300]="!isDragging()"
+      [class.bg-white]="!isDragging()"
+      class="border border-dashed rounded-2xl p-14 mb-12 text-center transition-all cursor-pointer shadow-sm group hover:border-blue-500 hover:shadow-md relative overflow-hidden"
+      (click)="fileInput.click()"
+    >
+      <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+
+      <input 
+        type="file" 
+        #fileInput 
+        class="hidden" 
+        (change)="onFileSelected($event)" 
+        accept="image/png, image/jpeg, image/jpg, image/tiff" 
+      />
+      
+      <div class="flex flex-col items-center justify-center space-y-4 max-w-md mx-auto">
+        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-500 group-hover:text-blue-600 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all shadow-sm">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-slate-700 font-semibold text-base">
+            Arraste arquivos de mídia para cá ou <span class="text-blue-600 group-hover:text-blue-700 font-bold">procure nos locais</span>
+          </p>
+          <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Suporte nativo para os formatos homologados: <span class="bg-slate-100 px-1 py-0.5 rounded text-slate-600 font-mono">PNG, JPEG, JPG, TIFF</span> (Limite de segurança de 5MB por requisição)</p>
+        </div>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="flex flex-col justify-center items-center py-20 bg-white border border-slate-200/60 rounded-2xl shadow-sm">
+        <div class="relative w-12 h-12">
+          <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+          <div class="absolute inset-0 rounded-full border-4 border-t-blue-600 animate-spin"></div>
+        </div>
+        <span class="mt-4 text-xs font-semibold text-slate-500 tracking-wider uppercase">Indexando banco de dados...</span>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      
+      @if (fotos().length === 0) {
+        <div class="text-center py-20 bg-white rounded-2xl border border-slate-200/60 p-6 shadow-sm max-w-xl mx-auto">
+          <div class="h-12 w-12 bg-slate-50 text-slate-400 flex items-center justify-center rounded-xl mx-auto border border-slate-100 mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.008 1.24l.885 1.77a2.25 2.25 0 002.007 1.24h1.98a2.25 2.25 0 002.007-1.24l.885-1.77a2.25 2.25 0 012.007-1.24h3.86m-18 1.5h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+            </svg>
+          </div>
+          <p class="text-slate-700 font-bold text-base">Diretório Vazio</p>
+          <p class="text-sm text-slate-400 mt-1">Nenhum snapshot foi localizado na pasta física de produção do servidor.</p>
+        </div>
+      } @else {
+        <div class="flex items-center justify-between mb-6 border-b border-slate-200/60 pb-3">
+          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Coleção de Mídias Ativas ({{ fotos().length }})</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          @for (foto of fotos(); track $index) {
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden hover:shadow-xl hover:-translate-y-1 hover:border-slate-300/80 transition-all duration-300 group flex flex-col">
+              
+              <div class="h-48 bg-slate-900/5 flex items-center justify-center overflow-hidden relative border-b border-slate-100">
+                <span class="absolute top-3 right-3 z-10 text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-900/80 backdrop-blur-sm text-white px-2 py-0.5 rounded-md shadow-sm">
+                  {{ foto.filename.split('.').pop() }}
+                </span>
+
+                <img 
+                  [src]="'http://localhost:8080/' + foto.filename" 
+                  alt="Foto da Galeria" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  (error)="imgContainer.classList.remove('hidden'); $event.target.classList.add('hidden')"
+                />
+
+                <div #imgContainer class="hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-slate-400">
+                  <div class="p-3 bg-white border border-slate-100 rounded-xl shadow-sm text-slate-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-white flex-1 flex flex-col justify-between">
+                <div>
+                  <p class="text-sm font-bold text-slate-800 truncate" [title]="foto.filename">
+                    {{ foto.filename }}
+                  </p>
+                </div>
+                
+                <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100 text-[11px] text-slate-400 font-medium">
+                  <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-mono">
+                    {{ (foto.size / 1024).toFixed(1) }} KB
+                  </span>
+                  @if (foto.criado) {
+                    <span class="flex items-center">
+                      <svg class="w-3 h-3 mr-1 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {{ foto.criado | date:'dd/MM/yyyy' }}
+                    </span>
+                  }
+                </div>
+              </div>
+
+            </div>
+          }
+        </div>
+      }
+
+    }
+
+  </main>
+</div>
