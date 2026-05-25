@@ -231,7 +231,7 @@ Remove um arquivo existente pelo nome gerado pelo servidor.
 
 ---
 
-## �� Roadmap de melhorias
+## 🚀 Roadmap de melhorias
 
 * Persistência de metadados em banco de dados (PostgreSQL, MongoDB, etc.)
 * Integração com armazenamento em nuvem (AWS S3, Google Cloud Storage)
