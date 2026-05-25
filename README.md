@@ -16,7 +16,7 @@ Antes de executar o projeto, verifique se você possui:
 
 ## 🛠️ Instalação e Execução Local
 
-Execute os comandos abaixo a partir da pasta raiz do repositório:
+Execute os comandos abaixo a partir da pasta raiz do repositório para configurar o backend NestJS:
 
 ```bash
 git clone https://github.com/Guiboom/Evolucao-do-Sistema-de-Armazenamento-em-Nuvem
@@ -25,7 +25,19 @@ npm install
 npm run start:dev
 ```
 
-A aplicação iniciará em `http://localhost:3000`.
+A aplicação backend iniciará em `http://localhost:3000`.
+
+### Instalação do Frontend Angular
+
+Se você também quiser executar o frontend Angular, siga estes passos a partir da raiz do repositório:
+
+```bash
+cd frontend
+npm install
+npm run start
+```
+
+O frontend Angular será iniciado em `http://localhost:4200` por padrão.
 
 ---
 
